@@ -12,7 +12,7 @@ import json
 from collections import defaultdict
 import numpy as np
 
-from .threading_timer_decorator_exit import exit_after
+from threading_timer_decorator_exit import exit_after
 
 @exit_after(120)
 def align_relations(gold_list, predicted_list, partial_match_cutoff):
@@ -39,7 +39,7 @@ def align_relations(gold_list, predicted_list, partial_match_cutoff):
     doc_id_to_gold_list = _separate_by_doc_id(gold_list)
     doc_id_to_predicted_list = _separate_by_doc_id(predicted_list)
     all_doc_id = set(
-        list(doc_id_to_gold_list.keys()) + list(doc_id_to_predicted_list.keys()))
+        doc_id_to_gold_list.keys() + doc_id_to_predicted_list.keys())
     relation_alignment = []
     arg1_alignment = []
     arg2_alignment = []
@@ -93,7 +93,7 @@ def compute_score_matrix(gold_list, predicted_list, alignment_score_fn, partial_
 def _recurs_align_relations(gi, pi_used_set, num_predicted, score_matrix, adjacency, partial_match_cutoff):
     if gi == len(score_matrix):
         alignment = [(-1, pi)
-            for pi in range(num_predicted) if pi not in pi_used_set]
+            for pi in xrange(num_predicted) if pi not in pi_used_set]
         return 0, alignment
     max_score = 0.0
     max_alignment = []

@@ -23,9 +23,9 @@ def main(dir_name):
                 result_proto = z.open(x).read()
                 result_tuples =  re.findall('key: "([^"]+)" \n value: "([^"]+)"', result_proto)
                 if first:
-                    print('\t'.join(['file'] + [k for k, _ in result_tuples]))
+                    print '\t'.join(['file'] + [k for k, _ in result_tuples])
                     first = False
-                print('\t'.join([file_name] + [v for _, v in result_tuples]))
+                print '\t'.join([file_name] + [v for _, v in result_tuples])
 
 if __name__ == '__main__':
     dir_name = sys.argv[1] 

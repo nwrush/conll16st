@@ -47,7 +47,7 @@ def validate_file(file_name, language):
     all_correct = True
     for i, line in enumerate(lines):
         try:
-            print('Validating line %s' % (i+1))
+            print 'Validating line %s' % (i+1)
             relation = json.loads(line)
             check_type(relation)
             check_sense(relation, language)
@@ -95,7 +95,7 @@ def check_sense(relation, language):
     elif language == 'zh':
         valid_senses = ZH_SENSES
     else:
-        print('Invalid language option')
+        print 'Invalid language option'
         return
     if sense not in valid_senses:
         raise ValueError('Invalid sense of %s' % sense)

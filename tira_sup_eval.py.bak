@@ -6,15 +6,15 @@
 """
 import json
 import sys
-from .scorer import evaluate
-from .partial_scorer import partial_evaluate
-from .validator import validate_relation_list, identify_language
-from .tira_eval import write_proto_text, write_results
+from scorer import evaluate
+from partial_scorer import partial_evaluate
+from validator import validate_relation_list, identify_language
+from tira_eval import write_proto_text, write_results
 
 def use_gold_standard_types(sorted_gold_relations, sorted_predicted_relations):
     for gr, pr in zip(sorted_gold_relations, sorted_predicted_relations):
         if gr['ID'] != pr['ID']:
-            print('ID mismatch. Make sure you copy the ID from gold standard', file=sys.stderr)
+            print >> sys.stderr, 'ID mismatch. Make sure you copy the ID from gold standard'
             exit(1)
         pr['Type'] = gr['Type']
          
@@ -29,13 +29,13 @@ def main(args):
     if len(gold_relations) != len(predicted_relations):
         err_message = 'Gold standard has % instances; predicted %s instances' % \
                 (len(gold_relations), len(predicted_relations))
-        print(err_message, file=sys.stderr)
+        print >> sys.stderr, err_message
         exit(1)
 
     language = identify_language(gold_relations)
     all_correct = validate_relation_list(predicted_relations, language)
     if not all_correct:
-        print('Invalid format', file=sys.stderr)
+        print >> sys.stderr, 'Invalid format'
         exit(1)
 
     gold_relations = sorted(gold_relations, key=lambda x: x['ID'])
@@ -43,16 +43,16 @@ def main(args):
     use_gold_standard_types(gold_relations, predicted_relations)
 
     output_file = open('%s/evaluation.prototext' % output_dir, 'w')
-    print('Evaluation for all discourse relations')
+    print 'Evaluation for all discourse relations'
     write_results('All', evaluate(gold_relations, predicted_relations), output_file)
 
-    print('Evaluation for explicit discourse relations only')
+    print 'Evaluation for explicit discourse relations only'
     explicit_gold_relations = [x for x in gold_relations if x['Type'] == 'Explicit']
     explicit_predicted_relations = [x for x in predicted_relations if x['Type'] == 'Explicit']
     write_results('Explicit only', \
         evaluate(explicit_gold_relations, explicit_predicted_relations), output_file)
 
-    print('Evaluation for non-explicit discourse relations only (Implicit, EntRel, AltLex)')
+    print 'Evaluation for non-explicit discourse relations only (Implicit, EntRel, AltLex)'
     non_explicit_gold_relations = [x for x in gold_relations if x['Type'] != 'Explicit']
     non_explicit_predicted_relations = [x for x in predicted_relations if x['Type'] != 'Explicit']
     write_results('Non-explicit only', \
